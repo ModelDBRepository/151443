@@ -1,0 +1,12 @@
+//moddir channels
+load_file("nrngui.hoc")
+load_file("initSS.hoc")
+xpanel("Help")
+xlabel("Click Init & Run to display an ortodromic action")
+xlabel("potential. Insert IClamp[0] into a distal node (from interpreter:")
+xlabel("node[35] IClamp[0].loc(.5), for example), and see whether antidromic")
+xlabel("soma invasion occurs (you would also reduce the intensity of IClamp[0]")
+xlabel("when stimulating at the nodes). Then change the soma.diam to 35 um and")
+xlabel("to 39 um and see what happens. Also try changing various geometric and")
+xlabel("biophysical parameters.")
+xpanel()

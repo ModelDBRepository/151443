@@ -1,0 +1,152 @@
+soma Kdr_So = gkmax_Kdr
+soma SoFNa = gnamax_Naf_So
+soma SoPNa = gnamax_Nap
+soma AHP = gkcamax_mAHP
+soma iCa = gcamax_mAHP
+soma SoLe = gl_lk
+IS Kdr_IS = gkmax_Kdr
+IS ISFNa = gnamax_Naf_IS
+IS ISPNa = gnamax_Nap
+IS ISLe = gl_lk
+node[0] NoK = gkmax_K_No 
+node[0] NoFNa = gnamax_Naf_No
+node[0] NoPNa = gnamax_Nap_No
+dend[1] DenLe = g_pas
+
+proc soma_fast_Na() {
+	soma gnamax_Naf_So=SoFNa
+	AH gnamax_Naf_So(0:1)=SoFNa:0
+	dend[0] gnamax_Naf_So(0:1)=SoFNa:0
+}
+
+proc soma_pers_Na() {
+	soma gnamax_Nap_So=SoPNa
+	AH gnamax_Nap(0:1)=SoPNa:0
+	dend[0] gnamax_Nap(0:1)=SoPNa:0
+}
+
+proc soma_K_dr() {
+	soma gkmax_Kdr=Kdr_So
+	AH gkmax_Kdr(0:1)=Kdr_So:Kdr_IS
+	dend[0] gkmax_Kdr(0:1)=Kdr_So:0
+}
+
+proc soma_AHP() {
+        soma gkcamax_mAHP=AHP
+        AH gkcamax_mAHP(0:1)=AHP:0
+        dend[0] gkcamax_mAHP(0:1)=AHP:0
+}
+
+proc soma_iCa() {
+        soma gcamax_mAHP=iCa
+        AH gcamax_mAHP(0:1)=iCa:0
+        dend[0] gcamax_mAHP(0:1)=iCa:0
+}
+
+proc IS_fast_Na() {
+	IS gnamax_Naf_IS=ISFNa
+	AH gnamax_Naf_IS(0:1)=0:ISFNa
+}
+
+proc IS_K_dr() {
+	IS gkmax_Kdr=Kdr_IS
+	AH gkmax_Kdr(0:1)=Kdr_So:Kdr_IS
+}
+
+proc IS_pers_Na() {
+        IS gnamax_Nap=ISPNa
+        AH gnamax_Nap(0:1)=0:ISPNa
+}
+
+proc No_K() {
+	forsec "node" {	gkmax_K_No=NoK }
+}
+
+proc No_fast_Na() {
+	forsec "node" { gnamax_Naf_No=NoFNa }
+}
+
+proc No_pers_Na() {
+	forsec "node" { gnamax_Nap_No=NoPNa }
+}
+
+proc So_leak() {
+	soma gl_lk=SoLe
+	AH gl_lk(0:1)=SoLe:ISLe
+	dend[0] gl_lk(0:1)=SoLe:DenLe
+}
+
+proc IS_leak() {
+	IS gl_lk=ISLe
+	AH gl_lk(0:1)=SoLe:ISLe
+}
+
+proc Den_leak() {
+	dend[1] g_pas=DenLe
+	dend[2] g_pas=DenLe
+	dend[0] gl_lk(0:1)=SoLe:DenLe
+}
+
+xpanel("conductances 1")
+
+xlabel("soma K dr")
+xslider(&Kdr_So,0,1,"soma_K_dr()")
+xvalue("Kdr_So","Kdr_So",0,"soma_K_dr()")
+
+xlabel("soma fast Na")
+xslider(&SoFNa,0,1,"soma_fast_Na()")
+xvalue("SoFNa","SoFNa",0,"soma_fast_Na()")
+
+xlabel("soma pers Na")
+xslider(&SoPNa,0,1,"soma_pers_Na()")
+xvalue("SoPNa","SoPNa",0,"soma_pers_Na()")
+
+xlabel("soma AHP")
+xslider(&AHP,0,0.1,"soma_AHP()")
+xvalue("AHP","AHP",0,"soma_AHP()")
+
+xlabel("soma iCa")
+xslider(&iCa,0,0.00005,"soma_iCa()")
+xvalue("iCa","iCa",0,"soma_iCa()")
+
+xlabel("IS K dr")
+xslider(&Kdr_IS,0,1,"IS_K_dr()")
+xvalue("Kdr_IS","Kdr_IS",0,"IS_K_dr()")
+
+xlabel("IS fast Na")
+xslider(&ISFNa,0,1,"IS_fast_Na()")
+xvalue("ISFNa","ISFNa",0,"IS_fast_Na()")
+
+xlabel("IS pers Na")
+xslider(&ISPNa,0,0.5,"IS_pers_Na()")
+xvalue("ISPNa","ISPNa",0,"IS_pers_Na()")
+
+xpanel(1100,40)
+
+xpanel("conductances 2")
+
+xlabel("node K")
+xslider(&NoK,0,1,"No_K()")
+xvalue("NoK","NoK",0,"No_K()")
+
+xlabel("node fast Na")
+xslider(&NoFNa,0,5,"No_fast_Na()")
+xvalue("NoFNa","NoFNa",0,"No_fast_Na()")
+
+xlabel("node pers Na")
+xslider(&NoPNa,0,1,"No_pers_Na()")
+xvalue("NoPNa","NoPNa",0,"No_pers_Na()")
+
+xlabel("soma leakage")
+xslider(&SoLe,0,0.01,"So_leak()")
+xvalue("SoLe","SoLe",0,"So_leak()")
+
+xlabel("IS leakage")
+xslider(&ISLe,0,0.1,"IS_leak()")
+xvalue("ISLe","ISLe",0,"IS_leak()")
+
+xlabel("dend leakage")
+xslider(&DenLe,0,0.01,"Den_leak()")
+xvalue("DenLe","DenLe",0,"Den_leak()")
+
+xpanel(1300,60)

@@ -1,0 +1,37 @@
+proc update() {
+	for i=0,2 {
+		dend[i].L=soma.L*22
+		dend[i].diam=soma.diam
+	}
+	AH.diam(0:1)=soma.diam:IS.diam		
+}
+
+s_d = soma.diam
+is_d = IS.diam
+s_l = soma.L
+is_l = IS.L
+ah_l = AH.L
+
+xpanel("geometric parameters")
+
+xlabel("soma.diam")
+xslider(&s_d,30,70,"soma.diam = int(s_d) update()")
+xvalue("soma.diam","soma.diam",1,"update()")
+
+xlabel("IS.diam")
+xslider(&is_d,1.5,4.5,"IS.diam = int(is_d*10)/10 update()")
+xvalue("IS.diam","IS.diam",1,"update()")
+
+xlabel("soma.L")
+xslider(&s_l,30,70,"soma.L = int(s_l) update()")
+xvalue("soma.L","soma.L",1,"update()")
+
+xlabel("IS.L")
+xslider(&is_l,20,40,"IS.L = int(is_l)")
+xvalue("IS.L","IS.L",1)
+
+xlabel("AH.L")
+xslider(&ah_l,10,20,"AH.L = int(ah_l)")
+xvalue("AH.L","AH.L",1)
+
+xpanel(900,20)

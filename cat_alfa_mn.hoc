@@ -1,0 +1,169 @@
+//
+// A model of cat spinal motoneuron
+//
+
+ndend=3
+nnode=40
+create soma, AH, IS, dend[ndend], node[nnode], myel[nnode]
+     
+proc topol() {
+    
+     soma {
+          connect AH(0), (1)
+          connect dend[0](0), (0)
+     }
+
+     for i=1,ndend-1 {
+         connect dend[i](0), dend[i-1](1)
+     }
+
+     connect IS(0), AH(1)
+
+     connect myel[0](0), IS(1)
+
+     for i=0,nnode-2 {
+         connect node[i](0), myel[i](1)
+         connect myel[i+1](0), node[i](1)
+     }
+     
+     connect node[nnode-1](0), myel[nnode-1](1)
+     
+}
+
+proc geometry() {
+	
+	soma {
+		diam=50
+		L=50
+		nseg=5
+	}
+	
+	AH {
+	   diam(0:1)=50:3.0
+	   L=15
+	   nseg=3
+        }
+
+	IS {
+		diam=3.0
+		L=30
+		nseg=11
+	}
+	
+	forsec "dend" {
+			diam=50
+			L=1100
+			nseg=15
+	}
+	
+	forsec "node" {		
+			diam=6
+			L=4
+			nseg=1
+	}
+	
+	forsec "myel" {
+			diam=7
+			L=200
+			nseg=5
+	}
+
+}
+
+proc biophysics() {
+
+	forall Ra=70
+	
+	soma {
+		cm=1
+		insert Kdr
+		gkmax_Kdr=0.3
+		insert Naf_So
+		gnamax_Naf_So=0.03
+		insert Nap
+		gnamax_Nap=0.01
+		insert mAHP
+		gkcamax_mAHP=0.05
+		gcamax_mAHP=3e-5
+		insert lk
+		gl_lk=0.001
+	}
+	
+	AH {
+		cm=1
+		insert Kdr
+		gkmax_Kdr(0:1)=0.3:1
+		insert Naf_So
+		gnamax_Naf_So(0:1)=0.03:0
+		insert mAHP
+		gkcamax_mAHP(0:1)=0.05:0
+		gcamax_mAHP(0:1)=3e-5:0
+		insert Naf_IS
+		gnamax_Naf_IS(0:1)=0:0.2
+		insert Nap
+		gnamax_Nap(0:1)=0.01:0.25
+		insert lk
+		gl_lk(0:1)=0.001:0.01
+	}
+
+    IS {
+		cm=1
+		insert Kdr
+		gkmax_Kdr=1
+		insert Naf_IS
+		gnamax_Naf_IS=0.2
+		insert Nap
+		gnamax_Nap=0.25
+		insert lk
+		gl_lk=0.01
+	}
+	
+	forsec "dend" {
+		cm=1
+		insert pas
+		g_pas=0.0002
+		e_pas=-70
+	}
+	
+	forsec "myel" {
+		cm=0.1
+		insert pas
+		g_pas=0.001
+		e_pas=-70
+	}
+	
+	forsec "node" {
+		cm=1
+		insert K_No
+		gkmax_K_No=0.08
+		ek_K_No=-80
+		insert Naf_No
+		gnamax_Naf_No=0.4
+		insert Nap_No
+		gnamax_Nap_No=0.01
+		insert lk
+		gl_lk=0.007
+		el_lk=-80
+	}
+
+	dend[0] { // proximal dendrite holds ionic channels similar to soma, but density decreases
+			  // in proximal-distal direction (range), it hasn't got pas mechanism
+		insert mAHP
+		gkcamax_mAHP(0:1)=0.05:0
+		gcamax_mAHP(0:1)=3e-5:0
+		insert Kdr
+		gkmax_Kdr(0:1)=0.3:0
+		insert Naf_So
+		gnamax_Naf_So(0:1)=0.03:0
+		insert Nap
+		gnamax_Nap(0:1)=0.01:0
+		insert lk
+		gl_lk(0:1)=0.001:0.0002
+		uninsert pas
+	}
+
+}
+
+topol()
+geometry()
+biophysics()

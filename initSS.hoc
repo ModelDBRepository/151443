@@ -1,0 +1,30 @@
+load_file("nrngui.hoc")
+
+load_file("cat_alfa_mn.hoc")
+load_file("gr.ses")
+load_file("change_param.hoc")
+load_file("change_cond.hoc")
+
+celsius=36
+dt=0.005
+tstop=20
+
+// initialize the system by reading data from a previously
+// saved steady state (150 ms without perturbations)
+
+objref svstate, f
+svstate = new SaveState()
+f = new File("states.dat")
+svstate.fread(f)
+
+proc init() {
+     finitialize(v_init)
+     svstate.restore(1)
+     t=0
+     if (cvode.active()) {
+        cvode.re_init()
+     } else {
+       fcurrent()
+     }
+     frecord_init()
+}
